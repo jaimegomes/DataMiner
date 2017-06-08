@@ -82,6 +82,8 @@ public class PrincipalFormCnt {
 
 					principalView.getLblStatus().setText("Iniciando captura de dados...");
 					log.info("Inciando captura de dados...");
+					Util.escreveArquivoLog(getFileUpload().getName(), "Arquivo: " + getFileUpload().getName());
+					Util.escreveArquivoLog(getFileUpload().getName(), "Inciando captura de dados...");
 
 					List<ClienteDTO> listaClientesPreenchida = new ArrayList<ClienteDTO>();
 					ClienteDTO clienteDTO = null;
@@ -104,20 +106,12 @@ public class PrincipalFormCnt {
 							// cria um objeto somente com os dados existentes
 							if (listContratos == null || listContratos.isEmpty()) {
 
-								clienteDTO = new ClienteDTO(cliente.getMatricula(), cliente.getNome(), cliente.getCpf(),
-										cliente.getDataNascimento(), cliente.getIdade(), cliente.getSexo(),
-										cliente.getOrgao(), cliente.getCargo(), cliente.getLotacao(),
-										cliente.getSalario(), cliente.getRegimeJuridico(),
-										cliente.getResumoFinanceiro().getDataCompetencia(),
-										cliente.getResumoFinanceiro().getMargemConsignavelEmp(),
-										cliente.getResumoFinanceiro().getValorConsignadoEmp(),
-										cliente.getResumoFinanceiro().getMargemDisponivelEmp(),
-										cliente.getResumoFinanceiro().getMargemConsignavelRmc(),
-										cliente.getResumoFinanceiro().getValorConsignadoRmc(),
-										cliente.getResumoFinanceiro().getMargemDisponivelRmc(),
-										cliente.getResumoFinanceiro().getQtdEmp(),
-										cliente.getResumoFinanceiro().getQtdRmc(), cliente.getTipo(), null, null, null,
-										null, null, null, null, null, null, null, null, null);
+								clienteDTO = new ClienteDTO(cliente.getMatricula(), cliente.getNome(), cliente.getCpf(), cliente.getDataNascimento(), cliente.getIdade(), cliente.getSexo(),
+										cliente.getOrgao(), cliente.getCargo(), cliente.getLotacao(), cliente.getSalario(), cliente.getRegimeJuridico(), cliente.getResumoFinanceiro()
+												.getDataCompetencia(), cliente.getResumoFinanceiro().getMargemConsignavelEmp(), cliente.getResumoFinanceiro().getValorConsignadoEmp(), cliente
+												.getResumoFinanceiro().getMargemDisponivelEmp(), cliente.getResumoFinanceiro().getMargemConsignavelRmc(), cliente.getResumoFinanceiro()
+												.getValorConsignadoRmc(), cliente.getResumoFinanceiro().getMargemDisponivelRmc(), cliente.getResumoFinanceiro().getQtdEmp(), cliente
+												.getResumoFinanceiro().getQtdRmc(), cliente.getTipo(), null, null, null, null, null, null, null, null, null, null, null, null);
 
 								listaClientesPreenchida.add(clienteDTO);
 
@@ -127,24 +121,14 @@ public class PrincipalFormCnt {
 								// cada contrato
 								for (Contrato con : cliente.getResumoFinanceiro().getContratos()) {
 
-									clienteDTO = new ClienteDTO(cliente.getMatricula(), cliente.getNome(),
-											cliente.getCpf(), cliente.getDataNascimento(), cliente.getIdade(),
-											cliente.getSexo(), cliente.getOrgao(), cliente.getCargo(),
-											cliente.getLotacao(), cliente.getSalario(), cliente.getRegimeJuridico(),
-											cliente.getResumoFinanceiro().getDataCompetencia(),
-											cliente.getResumoFinanceiro().getMargemConsignavelEmp(),
-											cliente.getResumoFinanceiro().getValorConsignadoEmp(),
-											cliente.getResumoFinanceiro().getMargemDisponivelEmp(),
-											cliente.getResumoFinanceiro().getMargemConsignavelRmc(),
-											cliente.getResumoFinanceiro().getValorConsignadoRmc(),
-											cliente.getResumoFinanceiro().getMargemDisponivelRmc(),
-											cliente.getResumoFinanceiro().getQtdEmp(),
-											cliente.getResumoFinanceiro().getQtdRmc(), cliente.getTipo(),
-											con.getIdContratoEmp(), con.getDataInicioDesconto(),
-											con.getDataFimDesconto(), con.getIdBancoEmp(), con.getNomeBancoEmp(),
-											con.getQtdParcelas(), con.getQtdParcelasRestante(), con.getValorQuitacao(),
-											con.getValorRefinDisponivel(), con.getValorRefinBruto(),
-											con.getValorParcela(), con.getTipoEmp());
+									clienteDTO = new ClienteDTO(cliente.getMatricula(), cliente.getNome(), cliente.getCpf(), cliente.getDataNascimento(), cliente.getIdade(), cliente.getSexo(),
+											cliente.getOrgao(), cliente.getCargo(), cliente.getLotacao(), cliente.getSalario(), cliente.getRegimeJuridico(), cliente.getResumoFinanceiro()
+													.getDataCompetencia(), cliente.getResumoFinanceiro().getMargemConsignavelEmp(), cliente.getResumoFinanceiro().getValorConsignadoEmp(), cliente
+													.getResumoFinanceiro().getMargemDisponivelEmp(), cliente.getResumoFinanceiro().getMargemConsignavelRmc(), cliente.getResumoFinanceiro()
+													.getValorConsignadoRmc(), cliente.getResumoFinanceiro().getMargemDisponivelRmc(), cliente.getResumoFinanceiro().getQtdEmp(), cliente
+													.getResumoFinanceiro().getQtdRmc(), cliente.getTipo(), con.getIdContratoEmp(), con.getDataInicioDesconto(), con.getDataFimDesconto(),
+											con.getIdBancoEmp(), con.getNomeBancoEmp(), con.getQtdParcelas(), con.getQtdParcelasRestante(), con.getValorQuitacao(), con.getValorRefinDisponivel(),
+											con.getValorRefinBruto(), con.getValorParcela(), con.getTipoEmp());
 
 									listaClientesPreenchida.add(clienteDTO);
 
@@ -157,19 +141,22 @@ public class PrincipalFormCnt {
 
 						long end = System.currentTimeMillis();
 						double totalTempoCpf = Util.calculaTempoExecucao(start, end);
-						principalView.getLblStatus().setText("Status: " + contadorStatus + "/" + total
-								+ " tempo processamento: " + totalTempoCpf / 1000 + "s");
+						principalView.getLblStatus().setText("Status: " + contadorStatus + "/" + total + " tempo processamento: " + totalTempoCpf / 1000 + "s");
+						log.info("Status: " + contadorStatus + "/" + total + " tempo processamento: " + totalTempoCpf / 1000 + "s");
+						Util.escreveArquivoLog(getFileUpload().getName(), "Status: " + contadorStatus + "/" + total + " tempo processamento: " + totalTempoCpf / 1000 + "s");
 					}
 
 					// stop na thread
 					worker.interrupt();
 
 					principalView.getLblStatus().setText("Arquivo processado com sucesso!");
+
 					principalView.getLblNomeArquivoUpload().setText("");
 					principalView.getLblNomeDiretorioDestino().setText("");
 					principalView.getBtnIniciar().setEnabled(true);
 
 					log.info("Arquivo processado com sucesso!");
+					Util.escreveArquivoLog(getFileUpload().getName(), "Arquivo processado com sucesso!");
 
 					WriteFileCSV.createCsvFile(listaClientesPreenchida, getFileDestino());
 				}
@@ -179,6 +166,7 @@ public class PrincipalFormCnt {
 
 		} catch (IOException e) {
 			log.error("Erro ao executar processo... " + e.getMessage());
+			Util.escreveArquivoLog(getFileUpload().getName(), "Erro ao executar processo... " + e.getMessage());
 			e.printStackTrace();
 		}
 
