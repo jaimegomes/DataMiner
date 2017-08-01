@@ -112,8 +112,6 @@ public class PrincipalFormCnt {
 												.getValorConsignadoRmc(), cliente.getResumoFinanceiro().getMargemDisponivelRmc(), cliente.getResumoFinanceiro().getQtdEmp(), cliente
 												.getResumoFinanceiro().getQtdRmc(), cliente.getTipo(), null, null, null, null, null, null, null, null, null, null, null, null);
 
-								WriteFileCSV.createCsvFile(clienteDTO, getFileDestino(), aux);
-								aux = true;
 								// listaClientesPreenchida.add(clienteDTO);
 
 							} else {
@@ -131,13 +129,14 @@ public class PrincipalFormCnt {
 											con.getIdBancoEmp(), con.getNomeBancoEmp(), con.getQtdParcelas(), con.getQtdParcelasRestante(), con.getValorQuitacao(), con.getValorRefinDisponivel(),
 											con.getValorRefinBruto(), con.getValorParcela(), con.getTipoEmp());
 
-									WriteFileCSV.createCsvFile(clienteDTO, getFileDestino(), aux);
-									aux = true;
+									
+									
 									// listaClientesPreenchida.add(clienteDTO);
 
 								}
 							}
-
+							WriteFileCSV.createCsvFile(clienteDTO, getFileDestino(), aux);
+							aux = true;
 						}
 
 						contadorStatus++;
