@@ -13,9 +13,8 @@ import br.com.mj.dataminer.dto.ClienteDTO;
 /**
  * Classe que gera o csv com os dados processados
  * 
- * @author Marcelo Lopes Nunes</br>
- *         bjjsolutions.com.br - 30/06/2016</br>
- *         <a href=malito:lopesnunnes@gmail.com>lopesnunnes@gmail.com</a>
+ * @author Marcelo Lopes Nunes</br> bjjsolutions.com.br - 30/06/2016</br> <a
+ *         href=malito:lopesnunnes@gmail.com>lopesnunnes@gmail.com</a>
  * 
  */
 public class WriteFileCSV {
@@ -23,34 +22,29 @@ public class WriteFileCSV {
 	private static final String COMMA_DELIMITER = ";";
 	private static final String NEW_LINE_SEPARATOR = "\n";
 	private static final String FILE_HEADER = "MATRICULA;NOME;CPF;DATA_NASCIMENTO;IDADE;SEXO;ORGÃO;CARGO;LOTAÇÃO;VALOR_SALÁRIO;REGIME_JURIDICO;DATA_COMPETÊNCIA;MARGEM_CONSIGNAVEL_EMP;VALOR_CONSIGNADO_EMP;MARGEM_DISPONIVEL_EMP;MARGEM_CONSIGNAVEL_RMC;VALOR_CONSIGNADO_RMC;MARGEM_DISPONIVEL_RMC;QUANTIDADE_EMP;QUANTIDADE_RMC;ID_CONTRATO_EMP;DT_INI_DESCONTO;DT_FIM_DESCONTO;ID_BANCO_EMP;NOME_BANCO_EMP;QUANTIDADE_PARCELAS;QUANTIDADE_PARCELAS_REST;VALOR_QUITAÇÃO;VALOR_REFIN_DISP;VALOR_REFIN_BRUTO;VALOR_PARCELA;TIPO_EMP;TIPO";
-	private static Logger log = Logger.getLogger("log");
 
 	public static void createCsvFile(List<ClienteDTO> clientesDTO, File destino) {
-
-		PropertyConfigurator.configure("src/main/resources/log4j.properties");
-
-		log.info("Gerando arquivo csv.");
 
 		FileWriter fileWriter = null;
 
 		try {
+
 			fileWriter = new FileWriter(destino.getAbsolutePath(), true);
 
-			fileWriter.append(FILE_HEADER.toString());
-
-			fileWriter.append(NEW_LINE_SEPARATOR);
+			if (!destino.exists()) {
+				fileWriter.append(FILE_HEADER.toString());
+				fileWriter.append(NEW_LINE_SEPARATOR);
+			}
 
 			for (ClienteDTO dto : clientesDTO) {
 
 				writeLine(fileWriter, dto);
 			}
 
-			log.info("Arquivo CSV criado com sucesso");
 			System.out.println("Arquivo CSV criado com sucesso");
 
 		} catch (Exception e) {
 			System.err.println("Erro na criação do arquivo");
-			log.error("Erro na criação do arquivo");
 			e.printStackTrace();
 		} finally {
 			try {
@@ -58,7 +52,38 @@ public class WriteFileCSV {
 				fileWriter.close();
 			} catch (IOException e) {
 				System.err.println("Error while flushing/closing fileWriter !!!");
-				log.error("Error while flushing/closing fileWriter !!!");
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static void createCsvFile(ClienteDTO clienteDTO, File destino, boolean aux) {
+
+		FileWriter fileWriter = null;
+
+		try {
+			
+			fileWriter = new FileWriter(destino.getAbsolutePath(), true);
+			
+			if (!aux) {
+				fileWriter.append(FILE_HEADER.toString());
+				fileWriter.append(NEW_LINE_SEPARATOR);
+			}
+			
+			writeLine(fileWriter, clienteDTO);
+
+			
+
+		} catch (Exception e) {
+			System.err.println("Erro na criação do arquivo");
+			e.printStackTrace();
+		} finally {
+			try {
+				System.out.println("Arquivo CSV criado com sucesso");
+				fileWriter.flush();
+				fileWriter.close();
+			} catch (IOException e) {
+				System.err.println("Error while flushing/closing fileWriter !!!");
 				e.printStackTrace();
 			}
 		}
@@ -67,27 +92,27 @@ public class WriteFileCSV {
 	private static void writeLine(FileWriter fileWriter, ClienteDTO clienteDTO) throws IOException {
 
 		// Cliente
-		fileWriter.append(clienteDTO.getMatricula());
+		fileWriter.append(clienteDTO.getMatricula() != null ? clienteDTO.getMatricula() : "");
 		fileWriter.append(COMMA_DELIMITER);
-		fileWriter.append(clienteDTO.getNome());
+		fileWriter.append(clienteDTO.getNome() != null ? clienteDTO.getNome() : "");
 		fileWriter.append(COMMA_DELIMITER);
-		fileWriter.append(clienteDTO.getCpf());
+		fileWriter.append(clienteDTO.getCpf() != null ? clienteDTO.getCpf() : "");
 		fileWriter.append(COMMA_DELIMITER);
-		fileWriter.append(clienteDTO.getDataNascimento());
+		fileWriter.append(clienteDTO.getDataNascimento() != null ? clienteDTO.getDataNascimento() : "");
 		fileWriter.append(COMMA_DELIMITER);
-		fileWriter.append(clienteDTO.getIdade());
+		fileWriter.append(clienteDTO.getIdade() != null ? clienteDTO.getIdade() : "");
 		fileWriter.append(COMMA_DELIMITER);
-		fileWriter.append(clienteDTO.getSexo());
+		fileWriter.append(clienteDTO.getSexo() != null ? clienteDTO.getSexo() : "");
 		fileWriter.append(COMMA_DELIMITER);
-		fileWriter.append(clienteDTO.getOrgao());
+		fileWriter.append(clienteDTO.getOrgao() != null ? clienteDTO.getOrgao() : "");
 		fileWriter.append(COMMA_DELIMITER);
-		fileWriter.append(clienteDTO.getCargo());
+		fileWriter.append(clienteDTO.getCargo() != null ? clienteDTO.getCargo() : "");
 		fileWriter.append(COMMA_DELIMITER);
-		fileWriter.append(clienteDTO.getLotacao());
+		fileWriter.append(clienteDTO.getLotacao() != null ? clienteDTO.getLotacao() : "");
 		fileWriter.append(COMMA_DELIMITER);
-		fileWriter.append(clienteDTO.getValorSalario());
+		fileWriter.append(clienteDTO.getValorSalario() != null ? clienteDTO.getValorSalario() : "");
 		fileWriter.append(COMMA_DELIMITER);
-		fileWriter.append(clienteDTO.getRegimeJuridico());
+		fileWriter.append(clienteDTO.getRegimeJuridico() != null ? clienteDTO.getRegimeJuridico() : "");
 		fileWriter.append(COMMA_DELIMITER);
 
 		// Resumo Financeiro

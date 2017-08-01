@@ -1,5 +1,7 @@
 package br.com.mj.dataminer.client;
 
+import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -11,6 +13,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
 import br.com.mj.dataminer.model.Cliente;
+import br.com.mj.dataminer.util.Util;
 
 /**
  * Classe que consome o WebService de captura de dados do Prestador
@@ -20,15 +23,11 @@ import br.com.mj.dataminer.model.Cliente;
  */
 public class ClientWS {
 	
-	static Logger log = Logger.getLogger("log");
-
-	public static List<Cliente> getInformacoesClienteWS(String cpf) {
-		
-		PropertyConfigurator.configure("src/main/resources/log4j.properties");
+	public static List<Cliente> getInformacoesClienteWS(String cpf, File arquivoLog) {
 
 		try {
 			String urlws = "http://ws.consulta.plus/v2/govsc/cadastro/" + cpf
-					+ "?apiKey=XlYYdir53yerhDz5sgkgktyudgoLF4o7vde4";
+					+ "?apiKey=9j8588LtIPjopyV6UwjrF12892lI45AEabt2sC7PltAyCBRAXyryiuo0iHODAE8A";
 
 			Client c = Client.create();
 
@@ -43,15 +42,14 @@ public class ClientWS {
 
 		} catch (Exception e) {
 			
-			log.error("CPF: " + cpf + " " + e.getMessage());
 			System.out.println("CPF: " + cpf + " " + e.getMessage());
+			Util.escreveArquivoLog(arquivoLog , "Erro ao conectar ao WS. "+ e.getMessage());
 
 			if (e.getMessage().indexOf("Gateway") > 0) {
 
-				log.info("TRATANDO ERRO, REPETINDO CPF " + cpf);
 				System.out.println("TRATANDO ERRO, REPETINDO CPF " + cpf);
 
-				getInformacoesClienteWS(cpf);
+				getInformacoesClienteWS(cpf, arquivoLog);
 			}
 		}
 		return null;

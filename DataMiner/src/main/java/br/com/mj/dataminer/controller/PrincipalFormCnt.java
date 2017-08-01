@@ -26,10 +26,8 @@ public class PrincipalFormCnt {
 	private File fileDestino;
 	private static Thread worker;
 	private int contadorStatus;
-	private static Logger log = Logger.getLogger("log");
 
 	public PrincipalFormCnt() {
-		PropertyConfigurator.configure("src/main/resources/log4j.properties");
 		principalView = new PrincipalView(this);
 		principalView.setVisible(true);
 	}
@@ -73,6 +71,7 @@ public class PrincipalFormCnt {
 
 		try {
 			contadorStatus = 0;
+			
 			final List<CsvDTO> list = Util.parseCsvFileToBeans(CsvDTO.class, getFileUpload());
 
 			final int total = list.size();
@@ -80,12 +79,12 @@ public class PrincipalFormCnt {
 			worker = new Thread() {
 				public void run() {
 
+					boolean aux = false;
 					principalView.getLblStatus().setText("Iniciando captura de dados...");
-					log.info("Inciando captura de dados...");
-					Util.escreveArquivoLog(getFileUpload().getName(), "Arquivo: " + getFileUpload().getName());
-					Util.escreveArquivoLog(getFileUpload().getName(), "Inciando captura de dados...");
+					Util.escreveArquivoLog(getFileDestino(), "Arquivo: " + getFileUpload().getName());
+					Util.escreveArquivoLog(getFileDestino(), "Inciando captura de dados...");
 
-					List<ClienteDTO> listaClientesPreenchida = new ArrayList<ClienteDTO>();
+//					List<ClienteDTO> listaClientesPreenchida = new ArrayList<ClienteDTO>();
 					ClienteDTO clienteDTO = null;
 
 					for (CsvDTO cpf : list) {
@@ -94,7 +93,7 @@ public class PrincipalFormCnt {
 
 						String cpfFormatado = StringUtils.leftPad(cpf.getCpf(), 11, "0");
 
-						List<Cliente> retornoJson = ClientWS.getInformacoesClienteWS(cpfFormatado);
+						List<Cliente> retornoJson = ClientWS.getInformacoesClienteWS(cpfFormatado, getFileUpload());
 						Cliente cliente = null;
 
 						if (retornoJson != null && !retornoJson.isEmpty()) {
@@ -113,7 +112,9 @@ public class PrincipalFormCnt {
 												.getValorConsignadoRmc(), cliente.getResumoFinanceiro().getMargemDisponivelRmc(), cliente.getResumoFinanceiro().getQtdEmp(), cliente
 												.getResumoFinanceiro().getQtdRmc(), cliente.getTipo(), null, null, null, null, null, null, null, null, null, null, null, null);
 
-								listaClientesPreenchida.add(clienteDTO);
+								WriteFileCSV.createCsvFile(clienteDTO, getFileDestino(), aux);
+								aux = true;
+								// listaClientesPreenchida.add(clienteDTO);
 
 							} else {
 
@@ -130,7 +131,9 @@ public class PrincipalFormCnt {
 											con.getIdBancoEmp(), con.getNomeBancoEmp(), con.getQtdParcelas(), con.getQtdParcelasRestante(), con.getValorQuitacao(), con.getValorRefinDisponivel(),
 											con.getValorRefinBruto(), con.getValorParcela(), con.getTipoEmp());
 
-									listaClientesPreenchida.add(clienteDTO);
+									WriteFileCSV.createCsvFile(clienteDTO, getFileDestino(), aux);
+									aux = true;
+									// listaClientesPreenchida.add(clienteDTO);
 
 								}
 							}
@@ -142,8 +145,11 @@ public class PrincipalFormCnt {
 						long end = System.currentTimeMillis();
 						double totalTempoCpf = Util.calculaTempoExecucao(start, end);
 						principalView.getLblStatus().setText("Status: " + contadorStatus + "/" + total + " tempo processamento: " + totalTempoCpf / 1000 + "s");
-						log.info("Status: " + contadorStatus + "/" + total + " tempo processamento: " + totalTempoCpf / 1000 + "s");
-						Util.escreveArquivoLog(getFileUpload().getName(), "Status: " + contadorStatus + "/" + total + " tempo processamento: " + totalTempoCpf / 1000 + "s");
+						// Util.escreveArquivoLog(getFileUpload().getParentFile().getPath(),
+						// getFileUpload().getName(), "Status: " +
+						// contadorStatus + "/" + total +
+						// " tempo processamento: " + totalTempoCpf
+						// / 1000 + "s");
 					}
 
 					// stop na thread
@@ -155,18 +161,17 @@ public class PrincipalFormCnt {
 					principalView.getLblNomeDiretorioDestino().setText("");
 					principalView.getBtnIniciar().setEnabled(true);
 
-					log.info("Arquivo processado com sucesso!");
-					Util.escreveArquivoLog(getFileUpload().getName(), "Arquivo processado com sucesso!");
+					Util.escreveArquivoLog(getFileDestino(), "Arquivo processado com sucesso!");
 
-					WriteFileCSV.createCsvFile(listaClientesPreenchida, getFileDestino());
+					// WriteFileCSV.createCsvFile(listaClientesPreenchida,
+					// getFileDestino());
 				}
 			};
 
 			worker.start();
 
 		} catch (IOException e) {
-			log.error("Erro ao executar processo... " + e.getMessage());
-			Util.escreveArquivoLog(getFileUpload().getName(), "Erro ao executar processo... " + e.getMessage());
+			Util.escreveArquivoLog(getFileDestino(), "Erro ao executar processo... " + e.getMessage());
 			e.printStackTrace();
 		}
 

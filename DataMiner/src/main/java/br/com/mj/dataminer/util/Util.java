@@ -1,7 +1,6 @@
 package br.com.mj.dataminer.util;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -15,9 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
-
-import javax.swing.filechooser.FileSystemView;
 
 import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBean;
@@ -33,22 +29,6 @@ import com.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
 public class Util {
 
 	private static Locale localePtBR = null;
-
-	public static String getProperty(String key) {
-		return getResourceBundle().getString(key);
-	}
-
-	private static ResourceBundle getResourceBundle() {
-		ResourceBundle resourceBundle = ResourceBundle.getBundle("resources.messageJSF", getLocalePtBR());
-		return resourceBundle;
-	}
-
-	private static Locale getLocalePtBR() {
-		if (localePtBR == null) {
-			localePtBR = new Locale("pt", "BR");
-		}
-		return localePtBR;
-	}
 
 	/**
 	 * Método que transforma cada cpf do arquivo csv em um objeto CsvDTO, nele
@@ -96,24 +76,32 @@ public class Util {
 
 	}
 
-	public static void escreveArquivoLog(String nomeArquivo, String mensagem) {
+	public static void escreveArquivoLog(File arquivo, String mensagem) {
 
-		File home = FileSystemView.getFileSystemView().getHomeDirectory();
-		String dataAtual = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+		Date dataAtual = new Date();
+		SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 
 		try {
+			String nomeArquivo = arquivo.getName();
+			String localArquivo = arquivo.getAbsolutePath().replace(nomeArquivo, "") + "Logs_CreditMiner\\" + fmt.format(dataAtual);
+			System.out.println(localArquivo);
+			File diretorio = new File(localArquivo);
 
-			File diretorio = new File(home + "\\Logs_CreditMiner\\"+ dataAtual);
 			if (!diretorio.exists()) {
-				diretorio.mkdir();
-			} else {
-				PrintWriter printWriter = new PrintWriter(new FileWriter(diretorio + "\\log."+ nomeArquivo.replace("csv", "txt"), true));
-
-				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-				printWriter.println(sdf.format(new Date()) + ": " + mensagem);
-				printWriter.flush();
-				printWriter.close();
+				diretorio.mkdirs();
 			}
+
+			File arquivoLog = new File(diretorio +"\\LOG." + nomeArquivo.replace("csv", "txt").replace("resultado_", ""));
+			if(!arquivoLog.exists()) {
+				arquivoLog.createNewFile();
+			}
+			
+			PrintWriter printWriter = new PrintWriter(new FileWriter(arquivoLog, true));
+
+			printWriter.println(sdf.format(new Date()) + ": " + mensagem);
+			printWriter.flush();
+			printWriter.close();
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -142,7 +130,7 @@ public class Util {
 	public static int retornaMes(Date data) {
 		Calendar c = new GregorianCalendar();
 		c.setTime(data);
-		return c.get(Calendar.MONTH);
+		return c.get(Calendar.MONTH) + 1;
 	}
 
 	public static int retornaAno(Date data) {
