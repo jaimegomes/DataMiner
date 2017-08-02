@@ -41,8 +41,6 @@ public class WriteFileCSV {
 				writeLine(fileWriter, dto);
 			}
 
-			System.out.println("Arquivo CSV criado com sucesso");
-
 		} catch (Exception e) {
 			System.err.println("Erro na criação do arquivo");
 			e.printStackTrace();

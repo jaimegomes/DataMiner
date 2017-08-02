@@ -49,7 +49,7 @@ public class ClientWS {
 			if (e.getMessage().indexOf("Gateway") > 0) {
 
 				System.out.println("TRATANDO ERRO, REPETINDO CPF " + cpf);
-
+				Util.escreveArquivoLog(arquivoLog,"TRATANDO ERRO, REPETINDO CPF: " + cpf);
 				getInformacoesClienteWS(cpf, arquivoLog);
 			}
 		} finally {
@@ -60,5 +60,4 @@ public class ClientWS {
 		return null;
 
 	}
-
 }
