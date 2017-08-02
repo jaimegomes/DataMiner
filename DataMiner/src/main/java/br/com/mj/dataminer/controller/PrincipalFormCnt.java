@@ -113,6 +113,8 @@ public class PrincipalFormCnt {
 												.getResumoFinanceiro().getQtdRmc(), cliente.getTipo(), null, null, null, null, null, null, null, null, null, null, null, null);
 
 								// listaClientesPreenchida.add(clienteDTO);
+								WriteFileCSV.createCsvFile(clienteDTO, getFileDestino(), aux);
+								aux = true;
 
 							} else {
 
@@ -132,11 +134,11 @@ public class PrincipalFormCnt {
 									
 									
 									// listaClientesPreenchida.add(clienteDTO);
+									WriteFileCSV.createCsvFile(clienteDTO, getFileDestino(), aux);
+									aux = true;
 
 								}
 							}
-							WriteFileCSV.createCsvFile(clienteDTO, getFileDestino(), aux);
-							aux = true;
 						}
 
 						contadorStatus++;
